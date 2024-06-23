@@ -9,6 +9,7 @@ const questionSchema = new Schema(
     options: [optionSchema],
     correctOption: { type: String, required: true },
     scenario: { type: String },
+    status: {type: String},
     //    gameId: { type: Schema.Types.ObjectId, ref: 'Game', required: true },
   },
   { timestamps: true }

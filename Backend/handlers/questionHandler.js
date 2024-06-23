@@ -31,6 +31,7 @@ export const createAndGetQuestion = async (req, res, next) => {
       options: options,
       correctOption: data.answer,
       scenario: data.scenario,
+      status: 'CREATED'
     });
 
     const savedQuestion = await question.save();
@@ -67,6 +68,36 @@ const removeBeforeAfterBraces = (str) => {
 export const getQuestion = async (req, res, next) => {
     try {
     const question = await Question.findById(req.params.questionId);
+
+    res.status(200).json({
+      id: question._id,
+      desc: question.desc,
+      maxTime: question.maxTime,
+      //    gameId: question.gameId,
+      options: question.options,
+      correctOption: question.correctOption,
+      scenario: question.scenario,
+    });
+
+    } catch (error) {
+        console.log(error);
+        res
+          .status(500)
+          .json({ message: "Technical Issue, Please try after sometime!" });
+      }
+};
+
+export const getNextQuestion = async (req, res, next) => {
+    try {
+    const question = await Question.findOne({status: 'CREATED'});
+
+    if (!question) {
+        return res.status(404).json({ message: 'Next question not found' });
+    }
+
+    question.status = 'SENT';
+
+    await question.save();
 
     res.status(200).json({
       id: question._id,
