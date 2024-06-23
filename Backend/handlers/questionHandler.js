@@ -62,3 +62,26 @@ const removeBeforeAfterBraces = (str) => {
 
   return "";
 };
+
+
+export const getQuestion = async (req, res, next) => {
+    try {
+    const question = await Question.findById(req.params.questionId);
+
+    res.status(200).json({
+      id: question._id,
+      desc: question.desc,
+      maxTime: question.maxTime,
+      //    gameId: question.gameId,
+      options: question.options,
+      correctOption: question.correctOption,
+      scenario: question.scenario,
+    });
+
+    } catch (error) {
+        console.log(error);
+        res
+          .status(500)
+          .json({ message: "Technical Issue, Please try after sometime!" });
+      }
+};
