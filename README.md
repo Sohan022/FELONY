@@ -13,5 +13,8 @@
 - The content is being genrated using a new model `domain_expansion` that is built using **Ollama** and is in `AI` folder
 - User login is by using `Dynamic` Wallet
 
+<img width="925" alt="Screenshot 2024-06-23 at 8 53 23 PM" src="https://github.com/Sohan022/unlimited-void/assets/75042859/ae07571e-ebe1-47b4-b518-a551183efcbd">
+
+
 This is our first time in a blockchain hackathon and we tried our best!
 Hope you enjoy playing it!
