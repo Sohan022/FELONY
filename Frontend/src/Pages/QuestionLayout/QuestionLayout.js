@@ -1,6 +1,7 @@
 import { useState } from "react";
 
 import moment from "moment";
+import axios from "axios";
 
 import Question from "../../components/Question";
 import Timer from "../../components/Timer";
@@ -8,43 +9,25 @@ import Loader from "../../components/Loader";
 import { useEffect } from "react";
 import Header from "../../components/Header";
 
-const fetchQuestion = () =>
-  new Promise((res) => {
-    setTimeout(
-      () =>
-        res({
-          question: "wieruwiorowru wrjwroifwhroiwuroiw?",
-          options: ["adad", "sdsd", "dsds", "dfdffd"],
-          id: 23232,
-          endTime: moment().add(30, "seconds"),
-          correctOption: 2,
-        }),
-      5000
-    );
-  });
+const fetchQuestion = async (id) =>
+  await axios.get("http://localhost:8000/question/next/new");
 
-const saveGame = () =>
-  new Promise((res) => {
-    setTimeout(
-      () =>
-        res({
-          question: "wieruwiorowru wrjwroifwhroiwuroiw?",
-          options: ["adad", "sdsd", "dsds", "dfdffd"],
-          id: 23232,
-          endTime: moment().add(30, "seconds"),
-          correctOption: 2,
-        }),
-      5000
-    );
-  });
+const saveGame = async (score) =>
+  await axios.post(`http://localhost:8000/save`, { score });
 
 const useQuestion = () => {
   const [isGeneratingQuestion, setIsGeneratingQuestion] = useState(false);
   const [question, setQuestion] = useState(null);
 
   const fetchAndSetQuestion = async () => {
-    const question = await fetchQuestion();
-    setQuestion(question);
+    const [question] = await Promise.all([
+      fetchQuestion(),
+      new Promise((r) => setTimeout(r, 8000)),
+    ]);
+    setQuestion({
+      ...(question?.data || {}),
+      endTime: moment().add(30, "seconds"),
+    });
     setIsGeneratingQuestion(false);
   };
 
@@ -72,12 +55,15 @@ const QuestionLayout = ({
 }) => {
   const { question, next, isGeneratingQuestion } = useQuestion();
   const [isSavingSelection, setIsSavingSelection] = useState(false);
+  const [scenario, setScenario] = useState(null);
+
   const [score, setScore] = useState(0);
 
   if (isGeneratingQuestion || !question || isSavingSelection) {
     return (
       <div className="infiniteVoid">
         <Header />
+        {scenario && <div className="scenario">{scenario}</div>}
         <Loader />;
       </div>
     );
@@ -90,7 +76,8 @@ const QuestionLayout = ({
   };
 
   const handleAnswerSelection = async ({ option, index }) => {
-    if (index !== question?.correctOption) {
+    setScenario(question?.scenario);
+    if (option?.key !== question?.correctOption) {
       endGame();
       return;
     }
@@ -109,7 +96,7 @@ const QuestionLayout = ({
         timeoutCallback={endGame}
       />
       <div className="question_container">
-        <h4 className="timer fullWidth">{question?.question}</h4>
+        <h4 className="timer fullWidth">{question?.desc}</h4>
         <div>
           {question?.options?.map((option, index) => (
             <button
@@ -124,7 +111,7 @@ const QuestionLayout = ({
               disabled={hasAnswered}
               onClick={() => handleAnswerSelection({ option, index })}
             >
-              {option}
+              {option?.desc}
             </button>
           ))}
         </div>

@@ -47,8 +47,6 @@ const Home = (props) => {
       <div className="domainGif">
         <Header />
         <div className="homeContainer">
-          <div className="mb12">Highest Score</div>
-
           <button
             className="btn btn-ui mb12 blackBg"
             onClick={() => dispatch({ type: "gameStarted" })}
