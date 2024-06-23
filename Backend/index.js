@@ -5,6 +5,7 @@ import bodyParser from 'body-parser';
 
 import authRoutes from './routes/authRoutes.js';
 import gameRoutes from './routes/gameRoutes.js';
+import questionRoutes from './routes/questionRoutes.js';
 
 dotenv.config();
 const app = express();
@@ -30,6 +31,7 @@ app.get('/', (req,res)=>{
 
 app.use('/auth', authRoutes);
 app.use('/game', gameRoutes);
+app.use('/question', questionRoutes);
 
 
 //server
