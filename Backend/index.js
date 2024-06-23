@@ -2,14 +2,17 @@ import express from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import bodyParser from 'body-parser';
+import cors from 'cors';
 
 import authRoutes from './routes/authRoutes.js';
 import gameRoutes from './routes/gameRoutes.js';
+import questionRoutes from './routes/questionRoutes.js';
 
 dotenv.config();
 const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cors());
 
 //database
 mongoose.connect(process.env.MONGODB_URL);
@@ -30,6 +33,7 @@ app.get('/', (req,res)=>{
 
 app.use('/auth', authRoutes);
 app.use('/game', gameRoutes);
+app.use('/question', questionRoutes);
 
 
 //server
